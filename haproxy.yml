@@ -1,0 +1,31 @@
+ hosts: webserver
+  become: yes
+  tasks:
+  - name: "installing webserver..."
+    package:
+      name: "httpd"
+      state: present
+  - name: "maing website ..."
+    copy:
+      dest: "/var/www/html"
+      src: "/root/index.html"
+  - name: "start server"
+    service:
+      name: "httpd"
+      state: started
+
+- hosts: loadbalancer
+  become: yes
+  tasks:
+  - name: "installing haproxy servr ...."
+    package:
+      name: "haproxy"
+      state: present
+  - name: "making dynamic haproxy consguration file"
+    template:
+      dest: "/etc/haproxy/haproxy.cfg"
+      src: "/root/haproxy.cfg"
+  - name: "restarting haproxy server"
+    service:
+      name: haproxy
+      state: restarted
